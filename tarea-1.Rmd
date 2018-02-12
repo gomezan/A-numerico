@@ -3,10 +3,10 @@ title: "Taller_1"
 author: "Andres David Gomez B && Luis Fernando Rodriguez A"
 date: "11 de febrero de 2018"
 output:
-  word_document: default
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
