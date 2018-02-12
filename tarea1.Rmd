@@ -1,0 +1,472 @@
+---
+title: "Taller_1"
+author: "Andres David Gomez B"
+date: "11 de febrero de 2018"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Horner
+
+
+
+
+
+
+```{r }
+# Horner
+rm(list=ls())
+horner <- function(p,n,x) {
+  y<-p[c(1)]
+  i<-1
+  iter<-0
+  while (i < n+1) {
+    y<-x*y+p[c(i+1)]
+    i<-i+1
+    iter<-iter+2
+  }
+  cat("RES: ",y,"\n")
+  cat("Operaciones: ",iter,"\n")
+  iter<-0
+  i<-n
+  j<-1
+  der<-0
+  while (i > 0) {
+    der[c(j)]<-(p[c(j)]*i)
+    i<-i-1
+    j<-j+1
+  }
+  i<-1
+  y<-der[c(1)]
+  while (i < n) {
+    y<-x*y+der[c(i+1)]
+    i<-i+1
+    iter<-iter+2
+  }
+  cat("RES derivada : ",y,"\n")
+  cat("Operaciones derivada: ",iter,"\n")
+}
+p<-c(2,0,-3,3,-4)
+horner(p,4,-2)
+cat("*************************" ,"\n")
+p<-c(7,6,-6,0,3,-4)
+horner(p,5,3)
+cat("*************************" ,"\n")
+p<-c(-5,0,3,0,2,-4,0)
+horner(p,6,-1)
+
+
+```
+
+## 2.Caja rectangular
+
+En este punto, dado que no sabemos que intervalo o punto es el adecuado, debemos buscar, estos datos. Entonces se usa el siguiente programa:
+
+```{r}
+
+# programa busca intervalos donde es posible encontrar raices
+rm(list=ls())
+Fx <- function(x) -1*x^3+28*x^2-192*x+250
+buscador <- function(a,b) {
+  i<-a
+  j<-a
+  x<-Fx(a)
+  y<-Fx(i)
+  while (b > i) {
+    y<-Fx(i)
+    if (x*y < 0) 
+    {
+      cat("intervalo [",j," ",i,"]","\n") 
+      x<-Fx(i)
+      j<-i
+    }
+    i<-i+1
+  }
+}
+buscador(0,100)
+x<-seq(0,20,1)
+plot(x,Fx(x),type="l",col="blue")
+abline(h=0,col="blue")
+
+
+```
+
+Se puede usar el buscador o la grafica para acercarse a las soluciones, pero ambos son limitados, por lo que son necesarios los dos para encontrar los puntos iniciales. Entonces en esos intervalos existe una inflexion, que garantiza la existencia de una raiz. Se usa un punto entre el intervalo, localizados con ayuda de los intervalos y de la grafica, como punto inicial y se procede a usar el metodo de newton.
+```{r}
+# Metodo de Newton
+rm(list=ls())
+Fx <- function(x) -1*x^3+28*x^2-192*x+250
+F1x <- function(x) -3*x^2+56*x-192
+# Metodo de Newton
+# Halla la raiz de 
+Newton <- function(x0) {
+  x<-seq(0,20,1)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-x0-(Fx(x0)/F1x(x0))
+  error <-1
+  while (error > 1.e-4) {
+    x<-x-(Fx(x)/F1x(x))
+    if (Fx(x) == 0) break
+    error<-abs(Fx(x)/F1x(x))
+    points(rbind(c(x,0)),pch=19,cex=0.7,col="red")
+    cat("X=",x,"\t","E=",error,"\n")
+  }
+}
+Newton(0)
+Newton(5.5)
+Newton(19)
+
+```
+Como segundo metodo, se usa el metodo de la secante con el intervalo encontrado 
+
+```{r}
+# Metodo de secante
+# Remueve todos los objetos creados
+rm(list=ls())
+Fx <- function(x) -1*x^3+28*x^2-192*x+250
+F1x <- function(x) -3*x^2+56*x-192
+# Halla la raiz de Fx
+secante <- function(x0,x1) {
+  x<-seq(0,20,1)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-(Fx(x1)*x0-Fx(x0)*x1)/(Fx(x1)-Fx(x0))
+  error <-1
+  while (error > 1.e-4) {
+    x0<-x1
+    x1<-x
+    x<-(Fx(x1)*x0-Fx(x0)*x1)/(Fx(x1)-Fx(x0))
+    if (Fx(x) == 0) break
+    error<-abs(Fx(x)/F1x(x))
+    points(rbind(c(x,0)),pch=19,cex=0.7,col="red")
+    cat("X=",x,"\t","E=",error,"\n")
+  }
+}
+secante(0,2)
+secante(2,9)
+secante(9,19)
+
+```
+ 
+ La solucion puede ser cualquiera de las dos primeras puesto que la tercera respuesta arroja un resultado negativo.
+ 
+¿Cual etapa del proceso de resolución de un problema numérico requiere más atención?
+la etapa que requiere mayor  atención en la resolución de un problema es el análisis de este ya que realizar un análisis incorrecto de el problema puede generar un error en las posteriores etapas de diseño y la solución, y el hacer un buen análisis del problema facilita su posterior solución ya que da una visión más amplia del ejercicio y del como poder desarrollarlo.
+¿Qué conocimientos son necesarios para formular un modelo matemático?
+
+son necesarios los conocimientos respecto a los principios físicos  y ecuaciones que rodean el problema, el poseer conocimientos sobre las ecuaciones permitirá tener una comprensión clara de como conectar la información del modelo, también es necesario conocer si existen modelos matemáticos que den solución al problema a tratar y en caso de no existir es necesario revisar otros modelos que trabajen problemas similares, lo cual permitirá plantear de manera más fácil el modelo del problema a trabajar.
+
+En el ejemplo de la caja ¿Cual seria la desventaja de intentar obtener experimentalmente la solución mediante prueba y error en lugar de analizar el modelo matemático?
+ se necesitaría realizar una cantidad indefinida de pruebas para encontrar una solución, al contrario de usar métodos numéricos los cuales nos darán de manera mas rapida y eficaz. 
+ ¿Que es más crítico: el error de truncamiento o el error de redondeo?
+	El error de truncamiento es mas critico ya que este puede generar perdida de datos al usar aproximaciones al contrario de el error de redondeo que para de tomar cierta cantidad de cifras significativas pero las cuales corresponden al valor real de la respuesta lo que hace mas exacto el valor verdadero .
+¿Cuál es la ventaja de instrumentar computacionalmente un método numérico?
+	Permite realizar los cálculos del modelo con mayor rapidez y permite replicar los modelos y aplicarlos a diferentes modelos y la  instrumentación computacional constituye la base para entender estos objetos matemáticos computacionales y extender el conocimiento al desarrollo de métodos para resolver problemas nuevos y más complejos.
+Cual es la desventaja de usar funciones definidas en paquetes de software para resolver los problemas.
+	
+	Las desventajas de usar paquetes de software para resolver problemas son que no se conoce totalmente cómo se realiza los cálculos para resolver el problemas,las  funciones aún no están completamente definidas o entendidas y el desconocer como están definidos y los posibles  errores que estos paquetes pueden tener o los métodos que usen para resolver un problema, pueden afectar si no se ajusta hacia los métodos que se necesitan para nuestro problema.
+
+¿Por que es importante validar los resultados obtenidos?
+	ya que los métodos numéricos tienen distintas soluciones las cuales son verdaderas, pero que no se ajustan a el problema a tratar, por ejemplo en el problema de la caja los resultados posibles fueron  8.0932, 15.8136, 7.8136 de las cuales las respuestas apropiadas fueron las primeras dos puesto que la tercera no tiene interpretación física.
+
+ 
+## 3. raiz cuadrada 
+
+```{r}
+# Remueve todos los objetos creados
+ # Remueve todos los objetos creados
+rm(list=ls())
+raices <- function(n,E,x) {
+  y<-0.5*(x+n/x)
+  E2<-0
+  while (E < abs(x-y)) {
+    x<-y
+    y<-0.5*(x+n/x)
+    E2<-abs(x-y)
+    cat("RES: ",y,"\t","E= ",E2,"Er ",E2/abs(y),"precision ",1-(E2/abs(y)),"\n")
+  }
+  
+}
+raices(7,1.e-6,3)
+
+
+```
+
+Precisión: Los cálculos muestran que conforme el error relativo disminuye con cada  iteración, es  cada vez  mayor la precisión de la respuesta.
+convergencia: como se puede observar los resultados se aproximan cada vez más al resultado esperado lo que nos indica que el algoritmo converge al resultado esperado de raiz de 7, se puede observar que la fórmula iterativa converge ya que el error de truncamiento cada vez es menor lo que afirma la convergencia del algoritmo usado.
+validez: al realizar la validación de la respuesta obtenida nos da que 2.65751 elevado al cuadrado no nos da como resultado 7 si no 6. 5408574001, ya que las respuestas dadas por el algoritmo  aun tienen error lo cual no permite que la respuesta sea exacta pero da una aproximación del posible valor esperado.
+
+
+
+## 4. Error de redondeo
+
+El computador guarda 0,5367x10∧3, que en comparación con los  0,53678x10∧3 originales, arroja un valor de  0,53678x10∧3-0,5367x10∧3=0,00008x10∧3
+Según  el criterio dado,  la cota está dada por:
+(1x10∧3-4) =1x10∧-1       
+entonces   |0,08| < 1x10∧-1
+El error relativo:
+(1x10∧-1)/(0.1x10∧4) =1x10∧-4
+
+## 5. Error absoluto y relativo
+
+d=20
+Eabsoluto=4(0,1)+5(0,1)=0,9
+Erelativo=(0,1/4) +(0,1/5)=0,045
+d=20±0,9
+
+## 6. Eficiencia de algoritmos
+
+1.
+```{r}
+# Remueve todos los objetos creados
+rm(list=ls())
+cociente <- function(n) {
+  i<- 1
+  y<- 0
+  while (n >0) {
+    d<- (n%/%2)
+    n<- (d/2)
+    y[c(i)]<-d
+    cat(i," ",d,"\n")
+    i=i+1
+    
+  }
+  
+}
+cociente(73)
+
+```
+
+2.
+En este caso buscamos encontrar el comportamiento general, descrito por la grafica:
+```{r}
+x<-seq(1,20,1)
+y<-c(1,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3)
+plot(x,y,type="l",col="blue")
+abline(h=0,col="blue")
+```
+Por lo tanto se puede aproximar a O([log(n)]) 
+
+## 7. Particula en movimiento
+
+Se usa la formula de distancia y se deriva para hallar la formula que descibe el tiempo y usamos el metodo de Newton para resolverlo, despues de hallar los intervalos.
+
+```{r}
+# Metodo de Newton
+rm(list=ls())
+Fx <- function(x) 8*sin(x)-3*sin(2*x)-2*cos(x)/2*sqrt((4*(cos(x))^2)+((sin(x))^2)-8*cos(x)-2*sin(x)+5)
+F1x <- function(x) 18*sin(x)-32*sin(2*x)+18*sin(3*x)+408*cos(x)-240*cos(2*x)+72*cos(3*x)-9*cos(4*x)-231/(8*(((sin(x))^2)-2*sin(x)+(4*(cos(x))^2)-8*cos(x)+5)^1.5)
+# Halla la raiz de 
+Newton <- function(x0) {
+  x<-seq(0,20,1)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-x0-(Fx(x0)/F1x(x0))
+  error <-1
+  while (error > 1.e-4) {
+    x<-x-(Fx(x)/F1x(x))
+    if (Fx(x) == 0) break
+    error<-abs(Fx(x)/F1x(x))
+    points(rbind(c(x,0)),pch=19,cex=0.7,col="red")
+    cat("X=",x,"\t","E=",error,"\n")
+  }
+}
+Newton(0.5)
+
+```
+ 
+## 8. Punto de interseccion
+
+El punto de interseccion sera la diferencia entre ambas funciones, se buscan los intervalos iniciales y se resuelve por el metodo de Newton
+```{r}
+# Metodo de Newton
+rm(list=ls())
+Fx <- function(x) 2+cos(3*x)-(2-exp(x))
+F1x <- function(x) exp(x)-3*sin(3*x)
+# Halla la raiz de 
+Newton <- function(x0) {
+  x<-seq(-1.5,1.5,0.01)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-x0-(Fx(x0)/F1x(x0))
+  error <-1
+  while (error > 1.e-4) {
+    x<-x-(Fx(x)/F1x(x))
+    if (Fx(x) == 0) break
+    error<-abs(Fx(x)/F1x(x))
+    points(rbind(c(x,0)),pch=19,cex=0.7,col="red")
+    cat("X=",x,"\t","E=",error,"\n")
+  }
+}
+Newton(0)
+
+```
+
+Ahora por el metodo de la secante:
+```{r}
+# Metodo de secante
+rm(list=ls())
+Fx <- function(x) 2+cos(3*x)-(2-exp(x))
+F1x <- function(x) exp(x)-3*sin(3*x)
+# Halla la raiz de Fx
+secante <- function(x0,x1) {
+  x<-seq(-1.5,1.5,0.01)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-(Fx(x1)*x0-Fx(x0)*x1)/(Fx(x1)-Fx(x0))
+  error <-1
+  while (error > 1.e-4) {
+    x0<-x1
+    x1<-x
+    x<-(Fx(x1)*x0-Fx(x0)*x1)/(Fx(x1)-Fx(x0))
+    if (Fx(x) == 0) break
+    error<-abs(Fx(x)/F1x(x))
+    points(rbind(c(x,0)),pch=19,cex=0.7,col="red")
+    cat("X=",x,"\t","E=",error,"\n")
+  }
+}
+secante(-1,0)
+
+```
+
+Al comparar ambas respuestas se puede observar que se asemejan en los tres primeros decimales, una incertidumbre de 1.e-4, que podemos aceptar como valido, entre otras caracteristicas, se encuentra que  el metodo de secante es mas preciso y  tuvo menos iteraciones que el de Newton.
+
+## 9. Ejercicios
+
+13.
+El metodo de Newton es un excelente ejemplo de metodo iterativo con convergencia cuadratica, porque su intervalo de convergencia existe mientras este sea continuo y se localiza en él, el corte con el eje x y las operaciones de las que se hace uso son elementales, suponiendo que se cuente con la derivada.
+
+14.a
+Para que el algoritmo sea efectivo se necesita que la funcion sea continua, ademas que en el intervalo de entrada se encuentre una raiz unica o por lo menos limitar el intervalo a una sola raiz. Mientras estas condiciones sean satisfechas la raiz, puede ser calculada.
+14.b
+El error de truncamiento es identico entre  iteraciones  hasta que encuentra el punto de inflexion, en donde cambia drasticamente, entonces las iteraciones vuelven a ser constantes, entonces se dice que la eficiencia es lineal a trozos y cuenta con un factor de convergencia de magnitud 1 y 0,1 entre ellos. 
+14.c
+Este es el algoritmo usando un ejemplo en clase
+```{r}
+# Remueve todos los objetos creados
+rm(list=ls())
+Fx <- function(x) exp(-x) + x -2
+
+# Halla la raiz de Fx
+deci<- function(a,b) {
+  x<-seq(a,b,0.1)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-a
+  d<-(b-a)/10
+  i<-0
+  error<-abs(a-b)/2
+  while (error > 1.e-4) {
+    i<-i+1
+    x<-x+d
+    if (Fx(x) == 0) break
+    if (Fx(x)*Fx(a) < 0)
+    {
+      x<-x-d
+      d<-d/10
+    }
+    points(rbind(c(x,0)),pch=17,cex=0.7,col="red")
+    text(x,0,i,cex=0.8,col="red")
+    error<-d
+    cat("X=",x,"\tE=",error,"\n")
+  }
+}
+deci(-3,0)
+
+
+```
+
+15.a
+La ecuacion es -5x+e^x+1
+15.b
+Se usan los criterios de busqueda que se han venido usando en todo el taller, graficacion y el programa buscador para obtener:
+```{r}
+# programa busca intervalos donde es posible encontrar raices
+rm(list=ls())
+Fx <- function(x) 1+exp(x)-5*x
+buscador <- function(a,b) {
+  i<-a
+  j<-a
+  x<-Fx(a)
+  y<-Fx(i)
+  while (b > i) {
+    y<-Fx(i)
+    if (x*y < 0) 
+    {
+      cat("intervalo [",j," ",i,"]","\n") 
+      x<-Fx(i)
+      j<-i
+    }
+    i<-i+1
+  }
+}
+buscador(0,100)
+x<-seq(0,3,0.0001)
+plot(x,Fx(x),type="l",col="blue")
+abline(h=0,col="blue")
+```
+
+15.c
+
+g(x)=(e^x+1)/5
+Se usa el punto medio del primer intervalo hallado como punto inicial.
+```{r}
+# Remueve todos los objetos creados
+rm(list=ls())
+Fx <- function(x) exp(x) +1-5*x
+gx<- function(x) (exp(x) +1)/5
+# Halla la raiz de Fx
+fijo<- function(a) {
+  x<-seq(0,1,0.001)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-gx(a)
+  i<-1
+  error<-1
+  while (error > 1.e-4) {
+    error<-abs(gx(x)-x)
+    x<-gx(x)
+    i<-i+1
+    points(rbind(c(x,0)),pch=17,cex=0.7,col="red")
+    text(x,0,i,cex=0.8,col="red")
+    cat("X=",x,"\tE=",error,"\n")
+  }
+}
+fijo(0.5)
+```
+
+15.d
+Manejando  5  iteraciones:
+
+```{r}
+# Remueve todos los objetos creados
+rm(list=ls())
+Fx <- function(x) exp(x) +1-5*x
+gx<- function(x) (exp(x) +1)/5
+# Halla la raiz de Fx
+fijo<- function(a) {
+  x<-seq(0,1,0.001)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-gx(a)
+  i<-1
+  error<-1
+  while (6 > i) {
+    error<-abs(gx(x)-x)
+    x<-gx(x)
+    i<-i+1
+    points(rbind(c(x,0)),pch=17,cex=0.7,col="red")
+    text(x,0,i,cex=0.8,col="red")
+    cat("X=",x,"\tE=",error,"\n")
+  }
+}
+fijo(0.5)
+
+
+```
