@@ -1,7 +1,6 @@
 ---
 title: "Taller_1"
-author: "Andres David Gomez B"
-author: "Luis Fernando Rodriguez A"
+author: "Andres David Gomez B && Luis Fernando Rodriguez A"
 date: "11 de febrero de 2018"
 output:
   word_document: default
