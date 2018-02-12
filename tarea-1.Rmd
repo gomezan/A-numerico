@@ -3,6 +3,8 @@ title: "Taller_1"
 author: "Andres David Gomez B"
 date: "11 de febrero de 2018"
 output:
+  word_document: default
+  pdf_document: default
   html_document:
     df_print: paged
 ---
