@@ -1,0 +1,17 @@
+---
+title: "Preparcial"
+author: "Andres David Gomez B"
+date: "25 de febrero de 2018"
+output:
+  html_document:
+    df_print: 
+  #pdf_document: default
+  #word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Horner
+## 2. Numeros binarios
