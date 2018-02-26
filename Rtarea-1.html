@@ -130,6 +130,75 @@ $(document).ready(function () {
 </div>
 <div id="numeros-binarios" class="section level2">
 <h2>2. Numeros binarios</h2>
+<pre class="r"><code>rm(list=ls())
+# convierte los numeros decimales en binario
+binario &lt;- function(a) {
+  x&lt;-floor(a)
+  d&lt;-a-x
+  #Variables del programa
+  e&lt;-0
+  y&lt;-0
+  i&lt;-1
+  #parte entera
+  while(2&lt;=x)
+  {
+    y&lt;-x%%2
+    x&lt;-floor(x/2)
+    if(y==0)
+    {
+      e[c(i)]&lt;-0
+      i&lt;-i+1
+    }
+    else
+    {
+      e[c(i)]&lt;-1
+      i&lt;-i+1
+    }
+  }
+  if(x==0)
+  {
+    e[c(i)]&lt;-0
+  }
+  else
+  {
+    e[c(i)]&lt;-1
+  }
+  while(0&lt;i)
+  {
+    cat(e[c(i)])
+    i&lt;-i-1
+  }
+  cat(&quot;.&quot;)
+  #parte decimal
+  i&lt;-1
+  e&lt;-0
+  y&lt;-d
+  while(i&lt;=15)
+  {
+    y&lt;-y*2
+    d&lt;-floor(y)
+    if(d==0)
+    {
+      e[c(i)]&lt;-0
+      i&lt;-i+1
+    }
+    else
+    {
+      e[c(i)]&lt;-1
+      i&lt;-i+1
+    }
+    y&lt;-y-d
+  }
+  x&lt;-1
+  while(x&lt;=i-1)
+  {
+    cat(e[c(x)])
+    x&lt;-x+1
+  }
+}
+binario(3.1416)</code></pre>
+<pre><code>## 11.001001000011111</code></pre>
+<pre class="r"><code>#11,001001000011111</code></pre>
 </div>
 
 
