@@ -199,6 +199,52 @@ binario &lt;- function(a) {
 binario(3.1416)</code></pre>
 <pre><code>## 11.001001000011111</code></pre>
 <pre class="r"><code>#11,001001000011111</code></pre>
+<p>Ahora a la inversa</p>
+<pre class="r"><code>rm(list=ls())
+# convierte los numeros binarios a decimales
+decimal &lt;- function(a,b) {
+tam&lt;-length(a)
+#Parte entera
+j&lt;-0
+sum&lt;-0
+res&lt;-0
+while(0&lt;tam)
+{
+  res&lt;-((a[c(tam)]))
+  if(res!=0)
+  {
+    sum=sum+(res*2^j) 
+  }
+  tam&lt;-tam-1
+  j&lt;-j+1
+}
+#cat(sum,&quot;.&quot;)
+#parte decimal
+tam&lt;-length(b)
+j&lt;-1
+while((j&lt;=tam))
+{
+  res&lt;-(b[c(j)])
+  if(res!=0)
+  {
+    sum=sum+(res*2^((j)*(-1))) 
+  }
+  j&lt;-j+1
+}
+cat(sum)
+}
+a&lt;-c(1,1,1)
+b&lt;-c(1,1,1,1,1,1)
+decimal(a,b)</code></pre>
+<pre><code>## 7.984375</code></pre>
+</div>
+<div id="binarios-infinitos" class="section level2">
+<h2>3.Binarios infinitos</h2>
+<ol style="list-style-type: decimal">
+<li>¿ Como se ajusta un numero binario infinito en un numero finito de bits?</li>
+<li>¿Cual es la diferencia entre redondeo y recorte?</li>
+<li>Idique el numero de punto flotante (IEEE) de precision doble asociado a x, el cual se denota como fl(x); para x(0.4).</li>
+</ol>
 </div>
 
 
