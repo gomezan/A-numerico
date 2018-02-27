@@ -131,5 +131,19 @@ decimal(a,b)
 1. ¿ Como se ajusta un numero binario infinito en un numero finito de bits?
 2. ¿Cual es la diferencia entre redondeo y recorte?
 4. Idique el numero de punto flotante (IEEE) de precision doble asociado a x, el cual se denota como fl(x); para x(0.4).
+Rta/
+Primero se usa el codigo para convertir el numero a binario y se obtiene:
+0.011001100110011001100110011001100110011001100110011011
+como el numero es positivo, entonces el primer bit es un 0.
+para hallar el exponente entonces se pasa la coma hasta el primer numero que nos deja un exponente igual a -2 y lo sumamos a 1023 por ser de doble presicion para obtener 1021, en binario: 1111111101 y para llenar los once bits 01111111101.
+Finalmente se posicionan en la mantiza los ultimos 52 bits 1001100110011001100110011001100110011001100110011011
+
+
+
+```{r}
+
+
+
+```
 
 
