@@ -3,10 +3,9 @@ title: "Preparcial"
 author: "Andres David Gomez B"
 date: "25 de febrero de 2018"
 output:
+  word_document: default
   html_document:
-    df_print: 
-  #pdf_document: default
-  #word_document: default
+    df_print: null
 ---
 
 ```{r setup, include=FALSE}

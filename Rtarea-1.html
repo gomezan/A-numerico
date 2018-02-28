@@ -241,10 +241,36 @@ decimal(a,b)</code></pre>
 <div id="binarios-infinitos" class="section level2">
 <h2>3.Binarios infinitos</h2>
 <ol style="list-style-type: decimal">
-<li>Â¿ Como se ajusta un numero binario infinito en un numero finito de bits?</li>
-<li>Â¿Cual es la diferencia entre redondeo y recorte?</li>
-<li>Idique el numero de punto flotante (IEEE) de precision doble asociado a x, el cual se denota como fl(x); para x(0.4). Rta/ Primero se usa el codigo para convertir el numero a binario y se obtiene: 0.01100110011001100110011001100110011001100110011001101</li>
+<li><p>¿ Como se ajusta un numero binario infinito en un numero finito de bits? Rta/</p></li>
+<li>¿Cual es la diferencia entre redondeo y recorte?</li>
+<li><p>Idique el numero de punto flotante (IEEE) de precision doble asociado a x, el cual se denota como fl(x); para x(0.4). Rta/ Primero se usa el codigo para convertir el numero a binario y se obtiene: 0.011001100110011001100110011001100110011001100110011011 como el numero es positivo, entonces el primer bit es un 0. para hallar el exponente entonces se pasa la coma hasta el primer numero que nos deja un exponente igual a -2 y lo sumamos a 1023 por ser de doble presicion para obtener 1021, en binario: 1111111101 y para llenar los once bits 01111111101. Finalmente se posicionan en la mantiza los ultimos 52 bits 1001100110011001100110011001100110011001100110011011</p></li>
 </ol>
+</div>
+<div id="ejercicios" class="section level2">
+<h2>4. Ejercicios</h2>
+<ol start="2" style="list-style-type: decimal">
+<li>Verificar si el tipo de datos basico de Matlab, R y Python es el numero de precision doble IEEE</li>
+</ol>
+<p>Rta/En R los números se tratan por defecto como objetos numéricos (es decir, valores de punto flotante de doble precisión). En general en R el objeto numeric representa Valores numéricos de punto flotante.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Revisar en Matlab, R y Phython el format long x = 9.4 y como opera esta forma</li>
+</ol>
+<pre class="r"><code>as.double(&quot;123456789123456789&quot;)</code></pre>
+<pre><code>## [1] 1.234568e+17</code></pre>
+<pre class="r"><code> 123456789123456784</code></pre>
+<pre><code>## [1] 1.234568e+17</code></pre>
+<pre class="r"><code> class(as.double(&quot;123456789123456789&quot;))</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<pre class="r"><code> &quot;numeric&quot;</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+<pre class="r"><code> is.double(as.double(&quot;123456789123456789&quot;))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li><p>Encuentre las dos raıces de la ecuacion cuadratica x 2 + 912x = 3 Intente resolver el problema usando la arim´etica de precision doble, (matlab). tenga en cuenta la perdida de significancia y debe contrarestarla.</p></li>
+<li><p>Explique como calcular con mayor exactitud las raıces de la ecuacion: x 2 + bx − 10−12 = 0 Donde b es un numero mayor que 100</p></li>
+</ol>
+<p><a href="http://www.lcc.uma.es/~villa/tn/tema02.pdf" class="uri">http://www.lcc.uma.es/~villa/tn/tema02.pdf</a></p>
+<p><a href="http://www.dacya.ucm.es/dani/aritm_pf.PDF" class="uri">http://www.dacya.ucm.es/dani/aritm_pf.PDF</a></p>
 </div>
 
 
