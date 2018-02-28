@@ -1,0 +1,171 @@
+---
+title: "Preparcial"
+author: "Andres David Gomez B"
+date: "25 de febrero de 2018"
+output:
+  word_document: default
+  html_document:
+    df_print: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Horner
+## 2. Numeros binarios
+```{r}
+rm(list=ls())
+# convierte los numeros decimales en binario
+binario <- function(a) {
+  x<-floor(a)
+  d<-a-x
+  #Variables del programa
+  e<-0
+  y<-0
+  i<-1
+  #parte entera
+  while(2<=x)
+  {
+    y<-x%%2
+    x<-floor(x/2)
+    if(y==0)
+    {
+      e[c(i)]<-0
+      i<-i+1
+    }
+    else
+    {
+      e[c(i)]<-1
+      i<-i+1
+    }
+  }
+  if(x==0)
+  {
+    e[c(i)]<-0
+  }
+  else
+  {
+    e[c(i)]<-1
+  }
+  while(0<i)
+  {
+    cat(e[c(i)])
+    i<-i-1
+  }
+  cat(".")
+  #parte decimal
+  i<-1
+  e<-0
+  y<-d
+  while(i<=15)
+  {
+    y<-y*2
+    d<-floor(y)
+    if(d==0)
+    {
+      e[c(i)]<-0
+      i<-i+1
+    }
+    else
+    {
+      e[c(i)]<-1
+      i<-i+1
+    }
+    y<-y-d
+  }
+  x<-1
+  while(x<=i-1)
+  {
+    cat(e[c(x)])
+    x<-x+1
+  }
+}
+binario(3.1416)
+#11,001001000011111
+```
+Ahora a la inversa
+```{r}
+rm(list=ls())
+# convierte los numeros binarios a decimales
+decimal <- function(a,b) {
+tam<-length(a)
+#Parte entera
+j<-0
+sum<-0
+res<-0
+while(0<tam)
+{
+  res<-((a[c(tam)]))
+  if(res!=0)
+  {
+    sum=sum+(res*2^j) 
+  }
+  tam<-tam-1
+  j<-j+1
+}
+#cat(sum,".")
+#parte decimal
+tam<-length(b)
+j<-1
+while((j<=tam))
+{
+  res<-(b[c(j)])
+  if(res!=0)
+  {
+    sum=sum+(res*2^((j)*(-1))) 
+  }
+  j<-j+1
+}
+cat(sum)
+}
+a<-c(1,1,1)
+b<-c(1,1,1,1,1,1)
+decimal(a,b)
+
+```
+
+##3.Binarios infinitos
+
+1. ¿ Como se ajusta un numero binario infinito en un numero finito de bits?
+Rta/
+
+2. ¿Cual es la diferencia entre redondeo y recorte?
+4. Idique el numero de punto flotante (IEEE) de precision doble asociado a x, el cual se denota como fl(x); para x(0.4).
+Rta/
+Primero se usa el codigo para convertir el numero a binario y se obtiene:
+0.011001100110011001100110011001100110011001100110011011
+como el numero es positivo, entonces el primer bit es un 0.
+para hallar el exponente entonces se pasa la coma hasta el primer numero que nos deja un exponente igual a -2 y lo sumamos a 1023 por ser de doble presicion para obtener 1021, en binario: 1111111101 y para llenar los once bits 01111111101.
+Finalmente se posicionan en la mantiza los ultimos 52 bits 1001100110011001100110011001100110011001100110011011
+
+
+## 4. Ejercicios
+2. Verificar si el tipo de datos basico de Matlab, R y Python es el numero de precision doble IEEE
+
+Rta/En R los números se tratan por defecto como objetos numéricos (es decir, valores de punto flotante de doble precisión).
+En general en R el objeto numeric representa Valores numéricos de punto flotante.
+
+3. Revisar en Matlab, R y Phython el format long
+x = 9.4 y como opera esta forma
+
+```{r}
+as.double("123456789123456789")
+ 123456789123456784
+ class(as.double("123456789123456789"))
+ "numeric"
+ is.double(as.double("123456789123456789"))
+```
+4. Encuentre las dos raıces de la ecuacion cuadratica x
+2 + 912x = 3 Intente resolver el problema usando la
+arim´etica de precision doble, (matlab). tenga en cuenta la perdida de significancia y debe contrarestarla.
+
+
+5. Explique como calcular con mayor exactitud las raıces de la ecuacion:
+x
+2 + bx − 10−12 = 0
+Donde b es un numero mayor que 100
+
+http://www.lcc.uma.es/~villa/tn/tema02.pdf
+
+http://www.dacya.ucm.es/dani/aritm_pf.PDF
