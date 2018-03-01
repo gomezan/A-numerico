@@ -3,9 +3,9 @@ title: "Parcial"
 author: "Andres David Gomez B"
 date: "28 de febrero de 2018"
 output:
+  word_document: default
   html_document:
     df_print: null
-  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -41,30 +41,10 @@ superior(a)
 
 b) Dada la formula basta con el siguiente codigo que depende del tamaño:
 ```{r}
-rm(list=ls())
-cat("Ingrese el tamaño de la matriz  cuadrada","\n") 
-eficiencia<- function(a) {
-  j<-1
-  i<-1
-  sum<-0
-  while(i<=a){
-    j<-i
-    while(j<=a)
-    {
-      sum<-sum+1
-      j<-j+1
-    }    
-    i<-i+1
-  }
-cat(sum)
-}
-eficiencia(4)
 
-```
-c) Se prueba la funcion con varios valores:
-```{r}
 rm(list=ls())
 eficiencia<- function(a) {
+  t <- proc.time() # Inicia el cronómetro
   j<-1
   i<-1
   sum<-0
@@ -77,44 +57,131 @@ eficiencia<- function(a) {
     }    
     i<-i+1
   }
-cat(sum)
+  proc.time()-t
+  cat(sum,"Tiempo: ",t[3])  # Detiene el cronómetro
 }
 
 i<-2
 while(i<=25){
-  cat(eficiencia(i),"\n")
+  
+  cat(i,": ")
+  eficiencia(i)
+  cat("\n")
   i<-i+1
 }
 
-```
-Con estos datos podemos concluir que  la notacion O() mas cercana es   : notacion O(nlog(n))
-## 2. Numeros Aitken
-Primero se evalua la sucesion mediante el metodo de biseccion:
 
+
+```
+c) Para poder ver la demostracion de f(n)=n(n+1)/2 ver en el link:
+
+https://docs.google.com/document/d/1LxlYIbw-R4bNqshdZ8uqnlKm8QlkTP3Hh6rspbti6WI/edit?usp=sharing
+
+## 2. Numeros Aitken
+Primero se evalua la sucesion para de e:
+```{r}
+# Remueve todos los objetos creados
+rm(list=ls())
+# Halla la raiz de Fx
+Fx <- function(x) 1/factorial(x)
+convergencia <- function() {
+  suma<-0
+  i<-0
+  error<-1
+  while (error > 1.e-5) {
+    y<-suma
+    suma<-suma+Fx(i)
+    i<-i+1
+    error<-abs(y-suma)
+    cat("X=",suma,"\tE=",error,"\n")
+  }
+}
+convergencia()
+
+```
+Entonces el valor de euler evaluado en uno es igual a 2.71828, para hallar el orden de divergencia observamos con el siguiente algoritmo como la constante de convergencia se  se acerca cada vez mas a uno, lo que concuerda con el limite encontado.
+
+lim ax- ∞(1/(n+1 )/(1/n)^ p
+lim ax->∞    (n^p)/(n+1)
+Si p=1 el limite converge a 1.
 
 ```{r}
 # Remueve todos los objetos creados
 rm(list=ls())
 # Halla la raiz de Fx
-Aitken <- function(a,b,c) {
-  x<-0
+Fx <- function(x) 1/factorial(x)
+Oconvergencia <- function() {
+  suma<-0
+  i<-0
+  Asintotico<-0
   error<-1
-  while (error > 1.e-4) {
-    #if (Fx(x) == 0) break
-    y<-x
-    x<-(a-(((b-a)^2)/(c-2*b+a)))
-    a<-b
-    b<-c
-    c<-x
-    error<-abs(y-x)
-    cat("X=",x,"\tE=",error,"\n")
+  while (error > 1.e-7) {
+    y<-suma
+    suma<-suma+Fx(i)
+    Asintotico<-abs(suma-2.71828)/(abs(y-2.71828))
+    i<-i+1
+    error<-abs(y-suma)
+    cat("X=",suma,"\tE=",error,"\n")
+    cat("Cte error asintotico",Asintotico,"\n")
+    cat("\n")
   }
 }
-#Aitken(1,1,1)
-```
-##3 Secante
-Se usa el metodo de la secante
+Oconvergencia()
 
+```
+Entonces se puede aplicar la aceleracion con aitken
+
+```{r}
+# Remueve todos los objetos creados
+
+# Remueve todos los objetos creados
+rm(list=ls())
+# Halla la raiz de Fx
+Fx <- function(x) 1/factorial(x)
+Aitken <- function() {
+  suma<-0
+  i<-0
+  res<-0
+  error<-1
+  cat("S1","\n")
+  while (i<=7) {
+    y<-suma
+    suma<-suma+Fx(i)
+    i<-i+1
+    res[c(i)]<-suma
+    error<-abs(y-suma)
+    cat("X=",suma,"\tE=",error,"\n")
+  }
+  aux<-0
+  i<-5
+  j<-0
+  y<-0
+  k<-2
+  while (i >0) {
+    cat("S",k,"\n")
+    while (j <i) {
+      j<-j+1
+      a<-res[c(j)]
+      b<-res[c(j+1)]
+      c<-res[c(j+2)]
+      aux[c(j)]<-(a-(((b-a)^2)/(c-2*b+a)))
+      error<-abs(y-aux[c(j)])
+      y<-aux[c(j)]
+      cat("X=",aux[c(j)],"\tE=",error,"\n")
+    }
+    res<-aux
+    j<-0
+    i<-i-2
+    k<-k+1
+  }
+}
+Aitken()
+```
+##3 Funcion imposible
+ 
+a)
+Con base en la grafica se ubica un intervalo de existencia y se acomodan las cotas para no caer en el pronunciado desnivel:
+```{r}
 # Metodo de secante
 # Remueve todos los objetos creados
 rm(list=ls())
@@ -137,21 +204,156 @@ secante <- function(x0,x1) {
     cat("X=",x,"\t","E=",error,"\n")
   }
 }
-secante(-2,0)
+secante(-1.99,-1.5)
 
-
+```
 
 b) 
+Se usa el metodo Newton, con el intervalo de existencia previo usado en el problema de la secante. Sin embargo no es posible hallar ninguna aproximacion deseada , por lo que para saber si existe una raiz se usa el metodo de biseccion por siempre garantizar la convergencia y para confirmar el valor ya hallado.
+```{r}
+# Remueve todos los objetos creados
+rm(list=ls())
+Fx <- function(x) log(x+2)-sin(x)
+# Halla la raiz de Fx
+biseccion <- function(a,b) {
+  x<-seq(a,b,00.1)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-b
+  d<-(a+b)/2
+  i<-0
+  error<-abs(a-b)/2
+  while (error > 1.e-5) {
+    i<-i+1
+    if (Fx(x) == 0) break
+    if (Fx(x)*Fx(a) < 0) b <- x else {a <- x}
+    d<-x
+    x<-(a+b)/2
+    #points(rbind(c(x,0)),pch=17,cex=0.7,col="red")
+    text(x,0,i,cex=0.8,col="red")
+    error<-abs(a-b)/2
+    cat("X=",x,"\tE=",error,"\n")
+  }
+}
+biseccion(-1.99,-1.5)
 
+```
+Ahora antes aplicar en los algoritmos, se corrobora el resultado, modificando el codigo para evaluar si la convergencia se acerca a 0:
+
+```{r}
+# Remueve todos los objetos creados
+rm(list=ls())
+Fx <- function(x) log(x+2)-sin(x)
+F1x <- function(x) (1/(x+2))-cos(x)
+# Halla la raiz de Fx
+biseccion <- function(a,b) {
+  x<-seq(a,b,00.1)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
+  x<-b
+  d<-(a+b)/2
+  i<-0
+  error<-abs(a-b)/2
+  while (error > 1.e-5) {
+    i<-i+1
+    if (Fx(x) == 0) break
+    if (Fx(x)*Fx(a) < 0) b <- x else {a <- x}
+    d<-x
+    x<-(a+b)/2
+    points(rbind(c(x,0)),pch=17,cex=0.7,col="red")
+    #text(x,0,i,cex=0.8,col="red")
+    error<-abs(a-b)/2
+    cat("X=",x,"\tE=",error,"\n")
+    cat("Evaluacion ",Fx(x),"\n")
+    cat("Evaluacion Derivada ",F1x(x),"\n","\n")
+  }
+}
+biseccion(-1.99,-1.5)
+
+```
+Dado codigo concluimos que la raiz es valida puesto que se acerca cada vez mas a 0 y a su vez que la derivada de la funcion evaluada en la misma es diferente de 0 por lo que cumple con el intervalo local de convergencia de Newton. Sin embargo al graficar las funciones:
+f(x)
+```{r}
+Fx <- function(x) log(x+2)-sin(x)
+x<-seq(-2,0,0.001)
+plot(x,Fx(x),type="l",col="blue")
+abline(h=0,col="blue")
+
+```
+f`(x)
+```{r}
+Fx <- function(x) (1/(x+2))-cos(x)
+x<-seq(-2,0,0.1)
+plot(x,Fx(x),type="l",col="blue")
+abline(h=0,col="blue")
+
+
+```
+f``(x)
+```{r}
+
+Fx <- function(x) (-1/(x+2)^2)+sin(x)
+x<-seq(-2,0,0.1)
+plot(x,Fx(x),type="l",col="blue")
+abline(h=0,col="blue")
+
+```
+Es posible verificar que la tercera derivada de la formula es menor a 0 en el intervalo, lo tanto viola el teorema de convergencia y no es posible garantizar que un x0 pueda ser usado para hallar la raiz mediante el metodo de newton, mucho menos el punto x0=1.
+
+Si se grafica en un rango considerable se obtiene:
+```{r}
 # Metodo de Newton
+rm(list=ls())
+Fx <- function(x) log(x+2)-sin(x)
+F1x <- function(x) (1/(x+2))-cos(x)
+# Metodo de Newton
+# Halla la raiz de 
+  x<-seq(-2,100,0.001)
+  plot(x,Fx(x),type="l",col="blue")
+  abline(h=0,col="blue")
 
+```
+Si se compara con la derivada evaluada en la raiz previamente hallada obtenemos:
+```{r}
+rm(list=ls())
+Fx <- function(x) log(x+2)-sin(x)
+F1x <- function(x) (1/(x+2))-cos(x)
+  a<-F1x(-1.6314)
+F2x <- function(x) a*x
+  x<-seq(-2,100,0.001)
+  plot(x,F2x(x),type="l",col="blue")
+  abline(h=0,col="blue")
+
+```
+Como se puede ver para que esta derivada corte con Fx se necesita de un punto indeterminado que no se puede hallar de forma aleatoria.
+Sin embargo teniendo en cuenta que ya conocemos la raiz se puede buscar los puntos de interseccion para poder aplicar el metodo de Newton.
+El intervalo de existencia se ubica mediante graficas pero dado que la funcion para encontrar la interseccion tambien tiene derivadas pronunciadas y el ln tiende a las indeterminaciones(graficaria pero el mismo programa no puede ubicarlo), entonces para hallar el punto mas cercano se usa una estrategia poco recomendable. Con el siguiente codigo (que estara comentado porque el programa hace que Rstudio colapse ) se busca cual es el ultimo punto que Rstudio puede procesar imprimiendolos uno a uno:
+
+rm(list=ls())
+Fx <- function(x) 2.773534*x-log(x+2)+sin(x)
+  x<-seq(-2.5,-1.5,0.001)
+  i<-1
+  while(1)
+  {
+    cat(x[c(i)])
+    i<-i+1
+  }
+
+  #plot(x,Fx(x),type="l",col="blue")
+  #abline(h=0,col="blue")
+  
+Se recomienda no correr el codigo. Sin embargo arroja un punto de interseccion igual a  -1.501
+
+Se procede a usar el algoritmo con el numero que sabemos esta muy cerca de la interseccion de la pendiente con la funcion:
+```{r}
+# Metodo de Newton
 rm(list=ls())
 Fx <- function(x) log(x+2)-sin(x)
 F1x <- function(x) (1/(x+2))-cos(x)
 # Metodo de Newton
 # Halla la raiz de 
 Newton <- function(x0) {
-  x<-seq(0,20,1)
+  x<-seq(-2,0,0.001)
   plot(x,Fx(x),type="l",col="blue")
   abline(h=0,col="blue")
   x<-x0-(Fx(x0)/F1x(x0))
@@ -164,5 +366,6 @@ Newton <- function(x0) {
     cat("X=",x,"\t","E=",error,"\n")
   }
 }
-Newton(1)
-
+Newton(-1.501)
+#-1.998423657
+```
