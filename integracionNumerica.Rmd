@@ -1,0 +1,45 @@
+---
+title: "punto 5."
+author: "Andres David Gomez B"
+date: "6 de abril de 2018"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Integracion 
+ Para la integración Se usa el metodo del trapecio y se ajusta a 4 cifras significativas.
+ 
+```{r}
+rm(list=ls())
+fx=function(x) (exp((x*x)*(-1)/2))/(sqrt(2*pi))
+integracion=function(a,b){
+  n=10000
+  particion=abs(a-b)/n
+  i=1
+  sum=0
+  b=a+particion
+  while(i<n)
+  {
+    diferencia=b-a
+    base=(fx(a)+fx(b))/2
+    res=base*diferencia
+    sum=sum+res
+    i=i+1
+    a=b
+    b=b+particion
+  }
+  
+  return(sum)
+}
+
+cat(integracion(-2,2))
+x<-seq(-2,2,0.001)
+plot(x,fx(x),type="l",col="blue")
+abline(h=0,col="blue")
+
+```
