@@ -1,0 +1,12 @@
+name: appA-numerico
+title: appA-numerico
+username:
+account: circuitosprimerorden
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 345659
+bundleId: 1382275
+url: https://circuitosprimerorden.shinyapps.io/appA-numerico/
+when: 1526753072.03888
+asMultiple: FALSE
+asStatic: FALSE

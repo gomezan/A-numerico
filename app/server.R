@@ -30,13 +30,13 @@ agregarComponente=function(a,malla,type)
 
 integracion=function(vec){
   tam=length(vec)
-  particion=0.0001
   i=1
   sum=0
   final=0
   while(i<tam)
   {
-    base=vec[i]+vec[i+1]/2
+    particion=abs(vec[i]-vec[i+1])
+    base=(vec[i]+vec[i+1])/2
     res=base*particion
     sum=sum+res
     final[i]=sum
@@ -187,6 +187,7 @@ darVoltaje=function(ckto,ubic)
   fte=0
   r=1
   aux=0
+  extra=0
   if((ckto[1,3]!=0)||(ckto[2,3]!=0)||(ckto[3,3]!=0))
   {
     if(ubic==1)
@@ -194,21 +195,24 @@ darVoltaje=function(ckto,ubic)
       fte=ckto[2,1]-ckto[3,1]
       r=ckto[2,3]+ckto[3,3]
       aux=ckto[3,3]
+      extra=ckto[1,1]
       
     }else if (ubic==2)
     {
       fte=ckto[1,1]-ckto[3,1]
       r=ckto[1,3]+ckto[3,3]
       aux=ckto[3,3]
+      extra=ckto[2,1]
       
     } else if (ubic==3)
     {
       fte=ckto[1,1]-ckto[2,1]
       r=ckto[1,3]+ckto[2,3]
       aux=ckto[1,1]
+      extra=ckto[3,1]
     }
     
-    res=fte*aux/r
+    res=(fte*aux/r)+extra
   }
   
   return(res)
