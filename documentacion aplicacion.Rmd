@@ -1,0 +1,77 @@
+---
+title: "Documentación aplicación Proyecto final"
+author: "Andres David Gomez B"
+date: "21 de mayo de 2018"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Simulador de circuitos de primer orden mediante métodos numéricos
+
+El proyecto busca crear un aplicativo web con la capacidad de simular el comportamiento de circuitos de primer orden, que son circuitos construidos además de las fuentes de energía que los alimentan, por elementos pasivos: resistores, capacitores e inductores, pero solo puede mantener un capacitor o un inductor, puesto que al agregar otro componente entonces se comportaría como un circuito de segundo orden. Debido a que su análisis, así como las fórmulas que rigen su comportamiento son diferentes, sería necesario entonces diseñar diferentes algoritmos para resolver ambos tipos, así como herramientas para diferenciarlos.  
+
+La simulación del comportamiento se basa en el caculo de la corriente, voltaje, potencia y energía relacionados con el componente en cuestión. Su objetivo primario es operar como una herramienta de aprendizaje en el análisis y solución de circuitos básicos, RC y RL.
+ 
+##   Planteamiento de la aplicación:
+La aplicación se compone por dos documentos, Server y Gui :
+##server
+En este archivo se almacena los cálculos relacionados con el desarrollo del circuito y las respuestas a las entradas del usuario. La aplicación basa su funcionamiento en funciones que están orientadas en hallar el equivalente de thevenin del circuito entrante. Se puede decir que un circuito es equivalente a otro, si se comporta de la misma forma, corriente y voltaje sobre un determinado elemento en ambos circuitos; la meta consiste en encontrar el equivalente sobre el componente, capacitor o inductor, para hallar la información deseada. El circuito de thevenin es muy utilizado en el análisis de circuitos debido a que es muy simple, consiste básicamente en una fuente de voltaje en serie con una resistencia y el elemento a estudiar. 
+![Circuito de thevenin](\Bibliotecas\Imágenes\thevenin.png)
+
+Una vez se descompone el circuito, la aplicación basa su funcionamiento en las ecuaciones diferenciales de corriente, si se trata de un inductor, o voltaje, de un capacitor. Estas corresponden a la función base del componente; entre las ventajas de usar métodos numéricos sobre el análisis del circuito en vez de su homologo analítico es que, manejar la ecuación diferencial permite mayor maleabilidad, en concreto la ecuación diferencial de los componentes se modifica para depender en mayor medida del voltaje inicial, lo que es especialmente importante en el desarrollo de circuitos RL puesto que su solución analítica depende de las corrientes inicial y final del inductor, usar únicamente el voltaje inicial, así como el valor nominal, simplifica mucho los cálculos y la transición entre circuitos RC y RL.  
+
+![Ecuaciones capacitor y bobina](\Bibliotecas\Imágenes\Eq.png)
+` Las ecuaciones diferenciales se resuelven mediante el método de Euler, contenido en funciones que encapsulan su comportamiento de acuerdo con el componente elegido. Una vez creado el vector que contiene la formula base, se halla la formula extra que es la operación inversa a la hallada, si la formula base es voltaje entonces la inversa será corriente y viceversa. Luego de haber encontrado ambos vectores el cálculo de la energía y la potencia se hallan usando operaciones básicas sobre los vectores existentes y se grafican los resultados.
+
+El manejo de eventos en las aplicaciones opera mediante las funciones reactive y observer, estas están programadas para realizar cambios o crear objetos de acuerdo con los movimientos del usuario. En concreto la aplicación usa como desencadenante para realizar los cálculos el botón simular.
+
+Las primeras versiones de la aplicación buscaban recibir en una tabla los valores correspondientes al comportamiento del componente e integrarlos directamente para hallar las demás formulas. Sin embargo, esta opción fue descartada debido a que no llegaba a respuestas naturales de los circuitos establecidos. Entonces se determinó que, en pro de no alterar los objetivos del proyecto, la tabla fue sustituida por una entrada numérica que almacenaría el voltaje inicial del componente, suficiente para resolver la ecuación diferencial junto con información de las otras entradas al sistema.   
+
+##GUI
+
+Contiene la interfaz con el usuario y regula las entradas y salidas del sistema. La aplicación puede dividirse en cuatro paneles principales.
+
+Las entradas relativas al componente incluyen una slider para ajustar el tiempo de análisis y dos entradas numéricas que contienen el valor inicial del voltaje y valor nominal del componente.
+
+![panel 1](\Bibliotecas\Imágenes\num1.png)
+Existen tres entradas numéricas que almacenan los elementos que contiene el circuito. Estas buscan generar un mapa físico donde se puedan interactuar virtualmente un numero ilimitado de resistencias o fuentes de voltaje.
+El botón simular es el objeto más importante puesto que es el único que tiene la responsabilidad de comenzar el análisis.
+
+![panel 2](\Bibliotecas\Imágenes\num2.png)
+Una solución sencilla para que el usuario pueda observar los componentes que el sistema considera en el análisis, así como verificar que los datos fueron subidos de forma correcta es imprimir tablas de las entradas del sistema. La primera columna corresponde al valor nominal mientras que la segunda corresponde a su tipo, resistencia o fuente de voltaje.  
+
+![panel 3](\Bibliotecas\Imágenes\num3.png "cosa")
+La salida principal esta constituida por cuatro graficas que en conjunto corresponden al comportamiento del componente en el circuito construido.
+
+![panel 4](C:\Users\Zipa\Pictures\num4.png "cosa")
+
+La aplicación es bastante delicada con respecto a las entradas para cada casilla de texto, ya sean las mallas del circuito o los valores iniciales de los componentes. Resulta difícil verificar las entradas por la flexibilidad del lenguaje en R, lo que facilita la aparición de errores si se escriben letras cuando se necesitan números o si se quiere especificar que una malla se encuentra vacía. En este último caso se puede llenar la malla con R=0 o V=0, que corresponde a una resistencia con valor nulo o una fuente que no proporciona energía, elementos netamente teóricos que no afectan el comportamiento de la aplicación, también podría dejar el espacio en blanco, pero puede afectar la estabilidad de ejecución por lo que no es recomendable.
+
+##Resultados y conclusiones
+
+El proyecto plantea muchos desafíos:
+•	Implementar una interfaz de usuario compleja utilizando elementos simples:
+La interfaz grafica de las aplicaciones shiny no están diseñadas para manejar interacciones complejas con el usuario. Esta es notable cuando se pretende manejar la posición de los circuitos con entradas de texto.  
+•	El dominio del problema es un terreno vasto y muy variado que demanda más tiempo y recursos.
+El análisis de circuitos es una parte importante para la física eléctrica y el eje básico de las ingenierías eléctrica y electrónica. Programar funciones para poder realizar este trabajo requiere un gran esfuerzo, si bien se superó este problema acotando las capacidades del sistema: manejando un circuito con un numero limitado de mallas, concentrándose en la solución de circuitos de primer orden etc. Las funciones orientadas a la solución del circuito son las que mas tiempo y trabajo requirieron.
+•	Aprender el sistema de manejo de eventos que responde a las entradas del usuario en lenguaje r.
+Rstudio usa funciones observer y reactive para el manejo de eventos, comunicar la interfaz grafica y el servidor, estas si bien llegan a ser muy practicas una vez entendidas, necesitan de tiempo y experimentación para su adecuado aprendizaje.
+
+Se puede concluir que el acabado final de la aplicación es bastante aceptable, teniendo en cuenta que las gráficas que modelan el comportamiento del circuito son congruentes con la operación de los componentes en la vida real, que era una de las metas principales del proyecto. Por ejemplo, si se carga el componente con un voltaje inicial superior a 0, y en los componentes del circuito no se agregan otras fuentes de energía, entonces la formula base tiende a 0, equivalente con descargarse por no obtener energía externa.  De igual forma si se especifica que el voltaje inicial es nulo y se agrega una fuente de energía con un valor considerable, el componente tiende a un valor mayor, correspondiente al valor final de corriente o voltaje, dependiendo si se trata de un inductor o un capacitor respectivamente.
+
+En el desarrollo del texto se habla un poco de las ventajas de usar métodos numéricos para solucionar el circuito, sin embargo, también existen desventajas, sobre todo por depender de una respuesta aproximada; en concreto en el cálculo de error: 
+
+$$|error|<(\left( \frac{hM}{2L} \right)( e^{L(T0-a)}+1 )$$
+donde h es el tamaño de paso, por defecto en el sistemas es igual a 0.0001, M es la cota superior de la seguna derivada, en el caso de las ecuaciones igual a 1, L es la constante de lipschitz de la función y a es el tiempo inicial, igual a 0. 
+La falta de información respecto al calculo de la constante de lipschitz, obligó a encontrar las respuestas exactas de circuitos ya solucionados y hallar el error exacto, que tiende a crecer  mucho con respecto a que el tiempo avanza, llegando incluso a superar un error relativo del 50%.Pero esto no se cumple em todos los casos depende mas bien de la complejidad del circuito a evaluar.
+Mientras tanto  el error del metodo de integración corresponde a la formula:
+$$|error|<(\left( \frac{((b-a)^3)}{12n^2} \right)( K )$$
+Donde a y b son extremos de las particiones, n corresponde al número de ellas, 10001 por defecto en el sistema y K es la constante de la segunda derivada al igual que en el metodo de euler igual a 1.
+Este error muestra ser mas razonable, entre muchas razones por el elevado numero de particiones que tiene el vector de la formula base.
+Estos resultados apuntan que la aplicación necesita aún refinarse puesto que manejo un margen de error muy elevado,proveniente principalmente  por el metodo de euler,   y como el objetivo del aplicativo es pedagogico es necesario llegar a soluciones muy precisas para operar adecuadamente.
+
+La aplicación esta disponible en el servidor IO.Shiny que ofrece la plataforma Rstudio para almacenar y compartir código. Copie el link en el navegador para probar la aplicación por sí mismo.
+https://circuitosprimerorden.shinyapps.io/appA-numerico/
